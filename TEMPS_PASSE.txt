@@ -1,0 +1,127 @@
+TEMPLATE - TEMPS PASSÉ SUR LE TEST
+===================================
+
+Candidat: [VOTRE NOM]
+Date de réalisation: [DATE]
+
+---
+
+TEMPS TOTAL: ______ heures
+
+---
+
+DÉTAIL PAR PARTIE:
+
+1. PARTIE 1 - Debugging:
+   Temps: ______ heures
+
+   Difficultés rencontrées:
+   -
+   -
+
+2. PARTIE 2 - Backend:
+   Temps: ______ heures
+
+   Difficultés rencontrées:
+   -
+   -
+
+3. PARTIE 3 - Frontend:
+   Temps: ______ heures
+
+   Difficultés rencontrées:
+   -
+   -
+
+4. PARTIE 4 - Documentation:
+   Temps: ______ heures
+
+   Difficultés rencontrées:
+   -
+   -
+
+5. PARTIE 5 - Tests (si fait):
+   Temps: ______ heures
+
+   Difficultés rencontrées:
+   -
+   -
+
+6. BONUS Features (si fait):
+   Temps: ______ heures
+   Features implémentées:
+   -
+   -
+
+---
+
+UTILISATION D'OUTILS IA:
+
+Avez-vous utilisé ChatGPT, GitHub Copilot, ou autres outils IA? [OUI/NON]
+
+Si OUI, détaillez:
+
+1. Quels outils?
+   -
+
+2. Pour quelles parties?
+   -
+
+3. Comment les avez-vous utilisés?
+   (Exemple: "J'ai demandé à ChatGPT d'expliquer comment fonctionne X,
+    puis j'ai écrit le code moi-même en m'inspirant de l'explication")
+   -
+
+4. Avez-vous adapté le code généré?
+   -
+
+5. Comprenez-vous tout le code soumis?
+   -
+
+---
+
+BUGS TROUVÉS:
+
+Sur les 5 bugs intentionnels, combien en avez-vous trouvés? ______
+
+Liste:
+- Bug #1: [OUI/NON]
+- Bug #2: [OUI/NON]
+- Bug #3: [OUI/NON]
+- Bug #4: [OUI/NON]
+- Bug #5: [OUI/NON]
+
+---
+
+AUTO-ÉVALUATION:
+
+Parties complétées à 100%:
+-
+
+Parties complétées partiellement:
+-
+
+Parties non faites:
+-
+
+Ce que vous auriez amélioré avec plus de temps:
+-
+-
+
+---
+
+COMMENTAIRES LIBRES:
+
+[Espace pour tout commentaire que vous souhaitez partager sur le test,
+les difficultés rencontrées, ou tout autre feedback]
+
+
+---
+
+HONNÊTETÉ:
+
+Je certifie que les informations ci-dessus sont exactes et que je peux
+expliquer et justifier chaque partie de mon code.
+
+Signature: ________________
+Date: ________________

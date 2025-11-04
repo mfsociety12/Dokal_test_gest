@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Système de Gestion Bancaire - Dokal Africa</title>
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="container">
+                <h1>🏦 Gestion Bancaire</h1>
+                <p class="subtitle">Dokal Africa - Test Technique</p>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="app-nav">
+            <div class="container">
+                <button class="nav-btn active" data-view="clients">
+                    👥 Clients
+                </button>
+                <button class="nav-btn" data-view="comptes">
+                    💳 Comptes
+                </button>
+                <button class="nav-btn" data-view="transactions">
+                    💸 Transactions
+                </button>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="app-main">
+            <div class="container">
+                <!-- Loading indicator -->
+                <div id="loading" class="loading hidden">
+                    <div class="spinner"></div>
+                    <p>Chargement...</p>
+                </div>
+
+                <!-- Error messages -->
+                <div id="error-container"></div>
+
+                <!-- Success messages -->
+                <div id="success-container"></div>
+
+                <!-- Views -->
+                <div id="view-clients" class="view active">
+                    <!-- Client management will be rendered here -->
+                </div>
+
+                <div id="view-comptes" class="view hidden">
+                    <!-- Account management will be rendered here -->
+                </div>
+
+                <div id="view-transactions" class="view hidden">
+                    <!-- Transaction management will be rendered here -->
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <div class="container">
+                <p>&copy; 2025 Dokal Africa - Test de Recrutement</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="src/app.js"></script>
+</body>
+</html>

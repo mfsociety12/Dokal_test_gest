@@ -1,0 +1,16 @@
+{
+  "name": "banking-frontend",
+  "version": "1.0.0",
+  "description": "Frontend for Banking Management System - Dokal Africa Recruitment Test",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx http-server -p 8080 -c-1",
+    "dev": "npx http-server -p 8080 -c-1 -o"
+  },
+  "keywords": ["banking", "frontend", "spa"],
+  "author": "Dokal Africa",
+  "license": "ISC",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}
