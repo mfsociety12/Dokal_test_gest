@@ -1,222 +1,123 @@
 # Architecture Documentation
 
-**TO BE COMPLETED BY CANDIDATE IN ENGLISH**
-
-## Instructions
-
-Explain your architectural decisions, design patterns, and overall code organization. This demonstrates your understanding of software architecture and your ability to communicate technical concepts.
-
----
-
 ## 1. Project Structure
 
-**TODO: Explain how you organized the code**
-
-Example:
-```
-The project is divided into backend and frontend:
-- Backend uses a layered architecture with routes, database, and business logic
-- Frontend uses a component-based architecture with...
-```
+- `backend/`
+  - `server.js`: Express application bootstrap, middleware, and route registration.
+  - `database.js`: In-memory data store for `clients`, `comptes`, and `transactions`, with simple CRUD helpers.
+  - `routes/clients.js`: HTTP routes and validation logic for clients.
+  - `routes/comptes.js`: HTTP routes and validation logic for accounts.
+  - `routes/transactions.js`: HTTP routes, balance updates, and simple locking for transactions.
+- `frontend/`
+  - `index.html`: Single-page layout with containers for each view (clients, accounts, transactions).
+  - `src/api.js`: API client responsible for HTTP communication with the backend.
+  - `src/app.js`: Application shell (navigation, view switching, global state).
+  - `src/components/ClientManager.js`: UI logic for managing clients (list, form, validation).
+  - `src/components/CompteManager.js`: UI logic for managing accounts of a selected client.
+  - `src/components/TransactionManager.js`: UI logic for deposits, withdrawals, transfers, and history.
+  - `styles/main.css`: Base styling, layout, tables, forms, and responsive rules.
+- `docs/`
+  - `API.md`: API documentation.
+  - `ARCHITECTURE.md`: This architecture document.
+  - `BUGS_FIXED.md`: Description of fixed bugs in the assessment.
 
 ---
 
 ## 2. Data Flow
 
-**TODO: Explain how data flows through your application**
+1. The user interacts with the frontend (buttons, forms, navigation).
+2. A frontend component (`ClientManager`, `CompteManager`, or `TransactionManager`) calls a function in `api.js`.
+3. `api.js` builds an HTTP request to the backend using `fetch` and a common `apiRequest` helper.
+4. The Express backend receives the request on a route in `routes/*.js`.
+5. The route validates the input, uses `database.js` to read or mutate in-memory collections, then returns a JSON response.
+6. The frontend receives the JSON, updates internal state and re-renders the DOM (using template strings and `innerHTML`).
+7. Any errors are displayed to the user via `showError`, and success states via `showSuccess`.
 
-Example:
-```
-1. User interacts with the UI (frontend components)
-2. Component calls API client (api.js)
-3. API client sends HTTP request to backend
-4. Backend route validates and processes request
-5. Database module updates in-memory storage
-6. Response flows back through the same layers
-```
+Conceptual diagram:
 
-You can include a diagram if helpful (ASCII art is fine):
-
-```
-[User] -> [Component] -> [API Client] -> [Backend Route] -> [Database]
-                                                                  |
-[User] <- [Component] <- [API Client] <- [Backend Route] <-------+
+```text
+[User] -> [Frontend Component] -> [api.js] -> [Express Route] -> [database.js]
+[User] <- [Frontend Component] <- [api.js] <- [Express Route] <+
 ```
 
 ---
 
 ## 3. Technology Choices
 
-**TODO: Explain why you chose certain technologies or approaches**
+**Backend:**
 
-Questions to answer:
-- Why did you use these particular libraries?
-- What alternatives did you consider?
-- What trade-offs did you make?
+- **Node.js + Express**
+  - Lightweight, widely used for REST APIs.
+  - Easy to set up and understand in an assessment context.
+  - Middleware pattern fits well for logging and error handling.
+- **In-memory database (plain JavaScript objects)**
+  - No external dependencies (e.g., PostgreSQL or MongoDB) to keep the project easy to run.
+  - Good enough for demonstrating data modeling and business logic.
 
-Example:
-```
-I chose vanilla JavaScript over a framework like React because:
-- The project size doesn't justify the overhead
-- It demonstrates core JS skills
-- Faster initial load time
-```
+**Frontend:**
+
+- **Vanilla JavaScript + DOM APIs**
+  - Avoids the overhead of frameworks like React or Vue.
+  - Shows understanding of fundamental web concepts (events, state, DOM updates).
+- **Simple SPA pattern**
+  - `app.js` manages navigation and global state; components manage their own rendering.
+  - Good balance between simplicity and structure.
+
+**Styling:**
+
+- **Custom CSS (`styles/main.css`)**
+  - No CSS framework required.
+  - Enough for a responsive, clean UI with minimal dependencies.
 
 ---
 
 ## 4. Design Patterns
 
-**TODO: Document the design patterns you used**
-
-Examples:
-- Module pattern for organizing code
-- Factory pattern for creating objects
-- Observer pattern for event handling
-- MVC/MVVM for separating concerns
-
-```
-I used the Module Pattern for the component files because...
-```
+- **Module pattern**:
+  - Each backend route file (`clients.js`, `comptes.js`, `transactions.js`) exports an Express router as a module.
+  - Each frontend component (`ClientManager`, `CompteManager`, `TransactionManager`) is implemented as a JS object with methods, exported from its module.
+- **Separation of concerns**:
+  - Routing and HTTP-level concerns live in `routes/*.js`.
+  - Data storage and low-level operations live in `database.js`.
+  - UI logic is in frontend component modules; networking is isolated in `api.js`.
+- **Factory-style object creation**:
+  - New clients, accounts, and transactions are constructed as plain objects at the moment they are created, using helpers (`uuidv4`, `generateNumeroCompte`).
+- **Centralized error handling**:
+  - A global Express error handler in `server.js` ensures a consistent error format.
+- **Simple locking pattern for concurrency**:
+  - `transactions.js` uses a `Map` of account locks to prevent concurrent balance updates on the same account.
 
 ---
 
 ## 5. Security Considerations
 
-**TODO: Explain how you handled security**
+- **Input validation (server-side)**:
+  - Clients:
+    - Names limited to 2–50 characters with only letters and basic accents.
+    - Phone number must match the Burkina Faso format: `+226 XX XX XX XX`.
+    - Email validated against a regex when provided.
+    - Address required and non-empty.
+  - Accounts:
+    - `clientId` must refer to an existing, active client.
+    - Account type restricted to `"epargne"` or `"courant"`.
+  - Transactions:
+    - Amount must be numeric, positive, and at least `100 XOF`.
+    - Description length capped at 200 characters.
+    - Accounts must exist and be active; balance must be sufficient for debits.
 
-Topics to cover:
-- Input validation (client and server side)
-- SQL injection prevention (if applicable)
-- XSS prevention
-- CSRF protection (if applicable)
-- Data sanitization
-- Error handling without leaking sensitive info
+- **Input validation (client-side)**:
+  - Client creation/edit forms validate phone, email, names, and address in real-time.
+  - Submit buttons are disabled when the form is invalid, reducing the chance of bad requests.
 
-Example:
-```
-Security measures implemented:
-1. Server-side validation of all inputs
-2. Phone number regex validation to prevent injection
-3. Error messages don't reveal internal implementation details
-4. ...
-```
+- **Error handling without leaking internals**:
+  - Errors use a generic structure `{ error, message, code, details }`.
+  - Internal stack traces are not exposed to the client.
 
----
+- **Concurrency and consistency**:
+  - Transactions use an account-level lock mechanism to avoid simultaneous updates to the same account balances (prevents race conditions in this in-memory setting).
 
-## 6. Database Design
-
-**TODO: Explain your data model**
-
-- Why this structure for clients, comptes, transactions?
-- How do relationships work?
-- What constraints did you implement?
-
-Example:
-```
-The database uses three main collections:
-- clients: Stores customer information
-- comptes: Linked to clients via clientId, stores account data
-- transactions: Linked to comptes via compteId, immutable transaction history
-
-Relationship diagram:
-Client (1) -> (*) Compte (1) -> (*) Transaction
-```
+- **CORS and JSON parsing**:
+  - CORS is enabled in a controlled way in `server.js`.
+  - JSON bodies are parsed with `express.json()`, and content type is enforced by the frontend.
 
 ---
-
-## 7. Error Handling Strategy
-
-**TODO: Explain how you handle errors**
-
-- What types of errors did you anticipate?
-- How do you communicate errors to users?
-- How do you log errors for debugging?
-
----
-
-## 8. Testing Strategy
-
-**TODO: Explain your approach to testing**
-
-If you wrote tests:
-- What did you test?
-- What testing framework did you use?
-- What's your coverage?
-
-If you didn't write tests (due to time):
-- What would you test if you had more time?
-- How would you structure your tests?
-
----
-
-## 9. Performance Considerations
-
-**TODO: Discuss performance optimizations**
-
-Examples:
-- Debouncing user input
-- Caching API responses
-- Lazy loading
-- Database query optimization
-- Lock mechanism for concurrent transactions
-
----
-
-## 10. Possible Improvements
-
-**TODO: What would you improve given more time?**
-
-Be honest and thoughtful:
-- What limitations does the current implementation have?
-- What features would you add?
-- How would you scale this to production?
-
-Example:
-```
-Given more time, I would:
-1. Replace in-memory database with PostgreSQL for persistence
-2. Add authentication and authorization
-3. Implement pagination for large datasets
-4. Add comprehensive test coverage (currently at X%)
-5. Implement real-time updates with WebSockets
-6. Add request rate limiting
-7. Improve error handling with custom error classes
-8. Add logging with Winston or similar
-```
-
----
-
-## 11. Challenges Faced
-
-**TODO: Describe challenges you encountered and how you solved them**
-
-This shows problem-solving ability:
-- What was difficult?
-- How did you approach the problem?
-- What did you learn?
-
-Example:
-```
-Challenge: Preventing race conditions in concurrent transactions
-Solution: Implemented a simple lock mechanism using a Map to track
-accounts currently being modified. This prevents two transactions
-from updating the same account simultaneously.
-```
-
----
-
-## 12. Code Quality Practices
-
-**TODO: Explain your approach to code quality**
-
-- Naming conventions
-- Code comments
-- DRY principle
-- SOLID principles (if applicable)
-- Consistent formatting
-
----
-
-## Additional Notes
-
-**TODO: Any other important information**
