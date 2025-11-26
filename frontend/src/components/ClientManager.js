@@ -201,40 +201,110 @@ export const ClientManager = {
    * Setup real-time form validation
    */
   setupFormValidation() {
-    // TODO: Implement real-time validation
-    // Validate phone number format as user types
-    // Validate email format
-    // Show/hide error messages
-    // Enable/disable submit button based on validation
-
+    const nomInput = document.getElementById('nom');
+    const prenomInput = document.getElementById('prenom');
+    const adresseInput = document.getElementById('adresse');
     const phoneInput = document.getElementById('telephone');
     const emailInput = document.getElementById('email');
+    const submitBtn = document.getElementById('submit-btn');
 
-    phoneInput.addEventListener('input', (e) => {
-      const phoneRegex = /^\+226\s\d{2}\s\d{2}\s\d{2}\s\d{2}$/;
-      const errorSpan = document.getElementById('telephone-error');
+    const nameRegex = /^[a-zA-ZÀ-ÿ\s-]{2,50}$/;
+    const phoneRegex = /^\+226\s\d{2}\s\d{2}\s\d{2}\s\d{2}$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-      if (!phoneRegex.test(e.target.value)) {
-        errorSpan.textContent = 'Format invalide. Utilisez: +226 XX XX XX XX';
-        e.target.classList.add('invalid');
+    const setError = (input, errorSpanId, message) => {
+      const span = document.getElementById(errorSpanId);
+      span.textContent = message || '';
+      if (message) {
+        input.classList.add('invalid');
       } else {
-        errorSpan.textContent = '';
-        e.target.classList.remove('invalid');
+        input.classList.remove('invalid');
       }
-    });
+    };
 
-    emailInput.addEventListener('input', (e) => {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      const errorSpan = document.getElementById('email-error');
-
-      if (e.target.value && !emailRegex.test(e.target.value)) {
-        errorSpan.textContent = 'Format email invalide';
-        e.target.classList.add('invalid');
-      } else {
-        errorSpan.textContent = '';
-        e.target.classList.remove('invalid');
+    const validateNom = () => {
+      const value = nomInput.value.trim();
+      if (!value) {
+        setError(nomInput, 'nom-error', 'Le nom est obligatoire');
+        return false;
       }
-    });
+      if (!nameRegex.test(value)) {
+        setError(nomInput, 'nom-error', '2-50 lettres uniquement');
+        return false;
+      }
+      setError(nomInput, 'nom-error', '');
+      return true;
+    };
+
+    const validatePrenom = () => {
+      const value = prenomInput.value.trim();
+      if (!value) {
+        setError(prenomInput, 'prenom-error', 'Le prénom est obligatoire');
+        return false;
+      }
+      if (!nameRegex.test(value)) {
+        setError(prenomInput, 'prenom-error', '2-50 lettres uniquement');
+        return false;
+      }
+      setError(prenomInput, 'prenom-error', '');
+      return true;
+    };
+
+    const validateAdresse = () => {
+      const value = adresseInput.value.trim();
+      if (!value) {
+        setError(adresseInput, 'adresse-error', 'L’adresse est obligatoire');
+        return false;
+      }
+      setError(adresseInput, 'adresse-error', '');
+      return true;
+    };
+
+    const validateTelephone = () => {
+      const value = phoneInput.value.trim();
+      if (!value) {
+        setError(phoneInput, 'telephone-error', 'Le téléphone est obligatoire');
+        return false;
+      }
+      if (!phoneRegex.test(value)) {
+        setError(phoneInput, 'telephone-error', 'Format invalide. Utilisez: +226 XX XX XX XX');
+        return false;
+      }
+      setError(phoneInput, 'telephone-error', '');
+      return true;
+    };
+
+    const validateEmail = () => {
+      const value = emailInput.value.trim();
+      if (value && !emailRegex.test(value)) {
+        setError(emailInput, 'email-error', 'Format email invalide');
+        return false;
+      }
+      setError(emailInput, 'email-error', '');
+      return true;
+    };
+
+    const validateForm = () => {
+      const ok =
+        validateNom() &&
+        validatePrenom() &&
+        validateAdresse() &&
+        validateTelephone() &&
+        validateEmail();
+      if (submitBtn) {
+        submitBtn.disabled = !ok;
+      }
+      return ok;
+    };
+
+    nomInput.addEventListener('input', () => validateForm());
+    prenomInput.addEventListener('input', () => validateForm());
+    adresseInput.addEventListener('input', () => validateForm());
+    phoneInput.addEventListener('input', () => validateForm());
+    emailInput.addEventListener('input', () => validateForm());
+
+    // initiale validation
+    validateForm();
   },
 
   /**
