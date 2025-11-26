@@ -24,7 +24,11 @@ function acquireLock(compteId) {
   // TODO: Fix Bug #5 - Implement proper locking
   // Currently this doesn't actually prevent race conditions
   // Hint: Check if lock exists, if not create it, if exists return false
-  return true; // This always returns true - that's the bug!
+  if (accountLocks.has(compteId)) {
+    return false;
+  }
+  accountLocks.set(compteId, true);
+  return true;
 }
 
 /**
@@ -33,6 +37,7 @@ function acquireLock(compteId) {
 function releaseLock(compteId) {
   // TODO: Fix Bug #5 - Implement proper lock release
   // Hint: Remove the lock from the accountLocks map
+  accountLocks.delete(compteId);
 }
 
 /**
@@ -74,9 +79,9 @@ function updateAccountBalance(compteId, montant, isCredit) {
   // But currently it does the opposite!
   let newSolde;
   if (isCredit) {
-    newSolde = compte.solde - montant; // Wrong! Should be +
+    newSolde = compte.solde + montant; // Wrong! Should be +
   } else {
-    newSolde = compte.solde + montant; // Wrong! Should be -
+    newSolde = compte.solde - montant; // Wrong! Should be -
   }
 
   db.updateInCollection('comptes', compteId, { solde: newSolde });

@@ -11,7 +11,7 @@ const cors = require('cors');
 const database = require('./database');
 
 // BUG #1: This line will cause issues - can you spot it?
-const app = express;
+const app = express();
 
 const PORT = process.env.PORT || 3000;
 

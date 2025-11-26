@@ -44,8 +44,9 @@ function validateClientData(data, isUpdate = false) {
       errors.push('Le numéro de téléphone est obligatoire');
     }
     // This regex is intentionally broken - it's too permissive
-    if (data.telephone && data.telephone.length < 3) {
-      errors.push('Le numéro de téléphone est invalide');
+    const phoneRegex = /^\+226\s\d{2}\s\d{2}\s\d{2}\s\d{2}$/;
+    if (data.telephone && !phoneRegex.test(data.telephone)) {
+      errors.push('Le numéro de téléphone doit être au format +226 XX XX XX XX');
     }
   }
 

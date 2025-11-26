@@ -1,150 +1,174 @@
-# Bugs Fixed Documentation
+## Bug #1: Server initialization failure
 
-**TO BE COMPLETED BY CANDIDATE IN ENGLISH**
+**Description:** The backend server crashed on startup with error "TypeError: app.use is not a function".
 
-## Instructions
+**Root cause:** In backend/server.js, the code used const app = express instead of calling the function by adding brackets like that : express().
 
-For each bug you found and fixed, provide a detailed explanation. This demonstrates your debugging skills and understanding of the code.
+**Solution:** I added brackets to correctly call the function express().
 
-**Format for each bug:**
-1. Bug number and title
-2. Description of the bug
-3. Root cause analysis
-4. Solution implemented
-5. How you found it
-6. Files/lines modified
+**How I found it:** I immediatly noticed this error when I was reading the code and saw that "BUG #1: This line will cause issues - can you spot it?".
 
----
+**Files Modified:** backend/server.js
 
-## Bug #1: [TITLE]
-
-**Description:**
-[Describe what was broken and what symptoms it caused]
-
-**Root Cause:**
-[Explain WHY the bug occurred - what was the underlying issue?]
-
-**Solution:**
-[Explain what you changed to fix it]
-
-**How I Found It:**
-[Describe your debugging process - error messages, testing, code review, etc.]
-
-**Files Modified:**
-- `filename.js` lines XX-YY
-
-**Code Changes:**
-```javascript
+**Code Changes:** 
 // BEFORE
-problematic code here
+const app = express;
 
 // AFTER
-fixed code here
-```
+const app = express();
 
----
 
-## Bug #2: [TITLE]
 
-**Description:**
+## Bug #2: Phone number validation
 
-**Root Cause:**
+**Description:** The backend accepted invalid phone numbers like "abc123".
 
-**Solution:**
+**Root cause:** This phone number validation only used a length validation which doesn't guarantee a valid phone number validation.
 
-**How I Found It:**
+**Solution:** I replaced the length validation by a phone number regex validation.
 
-**Files Modified:**
+**How I found it:** I noticed that the only validation made was about yhe phone number length when we usually use regex for this kind of validation.
 
-**Code Changes:**
+**Files Modified:** backend/routes/clients.js
 
----
+**Code Changes:** 
+// BEFORE
+if (data.telephone && data.telephone.length < 3) {
+  errors.push('Le numéro de téléphone est invalide');
+}
 
-## Bug #3: [TITLE]
+// AFTER
+const phoneRegex = /^\+226\s\d{2}\s\d{2}\s\d{2}\s\d{2}$/;
+if (data.telephone && !phoneRegex.test(data.telephone)) {
+  errors.push('Le numéro de téléphone doit être au format +226 XX XX XX XX');
+}
 
-**Description:**
 
-**Root Cause:**
 
-**Solution:**
 
-**How I Found It:**
+## Bug #3: Incorrect balance calculation
 
-**Files Modified:**
+**Description:** The account balance was not correct after transactions.
 
-**Code Changes:**
+**Root cause:** In backend/routes/transactions.js, the updateAccountBalance function was subtracting money from the account balance when the operation was a credit instead of adding some money.
 
----
+**Solution:** I changed the balance update logic to make credits operations add to the balance and debits ones subtract from the balance.
 
-## Bug #4: [TITLE]
+**How I found it:** When I was checking the updateAccountBalance implementation in backend/routes/transactions.js, I noticed that the comments in the file explicitly mentionned that the logic was reversed.
 
-**Description:**
+**Files Modified:** backend/routes/transactions.js
 
-**Root Cause:**
+**Code Changes:** 
+// BEFORE
+if (isCredit) {
+  newSolde = compte.solde - montant;
+} else {
+  newSolde = compte.solde + montant;
+}
 
-**Solution:**
+// AFTER
+if (isCredit) {
+  newSolde = compte.solde + montant;
+} else {
+  newSolde = compte.solde - montant;
+}
 
-**How I Found It:**
 
-**Files Modified:**
 
-**Code Changes:**
 
----
+## Bug #4: API request error
 
-## Bug #5: [TITLE]
+**Description:** Frontend POST/PUT requests to the backend were failing. The backend did not correctly receive or parse the JSON body, leading to validation errors or missing data.
 
-**Description:**
+**Root cause:** In frontend/src/api.js, the apiRequest helper did not set the Content-Type header and did not stringify the request body for non‑GET requests and without Content-Type: application/json and JSON.stringify, Express JS could not parse the JSON payload.
 
-**Root Cause:**
+**Solution:** I updated the request configuration to include the proper headers and to stringify the body for non‑GET requests:
 
-**Solution:**
+**How I found it:** I saw the bug description in INSTRUCTIONS.md and then inspected frontend/src/api.js. The comments around BUG #4 clearly mentionned missing headers and the lack of JSON.stringify.
 
-**How I Found It:**
+**Files Modified:** frontend/src/api.js
 
-**Files Modified:**
+**Code Changes:** 
+// BEFORE
+const config = {
+    method: options.method || 'GET',
+    // Missing headers! Should include Content-Type: application/json
+    headers: {
+      'Content-Type': 'application/json',
+      ...(options.headers || {})
+    },
+    ...options
+};
+// Only add body if it's not a GET request
+if (config.method !== 'GET' && options.body) {
+    // BUG #4: The body is not being stringified!
+    // JSON data needs to be converted to a string
+    config.body = options.body; // Should be JSON.stringify(options.body)
+}
 
-**Code Changes:**
 
----
+// AFTER
+const config = {
+    method: options.method || 'GET',
+    // Missing headers! Should include Content-Type: application/json
+    headers: {
+      'Content-Type': 'application/json',
+      ...(options.headers || {})
+    },
+    ...options
+};
 
-## Additional Bugs Found (If Any)
+// Only add body if it's not a GET request
+if (config.method !== 'GET' && options.body) {
+// BUG #4: The body is not being stringified!
+// JSON data needs to be converted to a string
+config.body = JSON.stringify(options.body); // Should be JSON.stringify(options.body)
+}
 
-If you found additional bugs not listed in the instructions, document them here:
 
-### Bug #6: [TITLE] (Optional)
 
-**Description:**
 
-**Root Cause:**
+## Bug #5: Race condition in concurrent transactions
 
-**Solution:**
+**Description:** When two transactions were executed simultaneously on the same account, the final balance could become inconsistent.
 
----
+**Root cause:** The simple lock mechanism in backend/routes/transactions.js was not actually implemented. The acquireLock function always returned true, and releaseLock did nothing: This meant that multiple concurrent requests could modify the same account balance at the same time, causing race conditions.
 
-## Testing Your Fixes
+**Solution:** I implemented a basic in‑memory lock using the existing accountLocks map: This ensures that only one transaction at a time can modify a given account; other transactions receive a 409 error until the lock is released.
 
-**TODO: Explain how you tested that your fixes work**
+**How I found it:** I followed the instructions in INSTRUCTIONS.md and read the comments in backend/routes/transactions.js around BUG #5. The comment explicitly stated that the locking was not implemented and that acquireLock always returned true. From there, I used the existing accountLocks map to implement a simple lock/unlock mechanism.
 
-Example:
-```
-For Bug #1, I tested by:
-1. Starting the server
-2. Checking that it doesn't crash
-3. Making a test API call to /health
-4. Verifying the response
-```
+**Files Modified:** backend/routes/transactions.js
 
----
+**Code Changes:** 
+// BEFORE 
+function acquireLock(compteId) {
+    // TODO: Fix Bug #5 - Implement proper locking
+    // Currently this doesn't actually prevent race conditions
+    // Hint: Check if lock exists, if not create it, if exists return false
+    return true; // This always returns true - that's the bug!
+}
 
-## Lessons Learned
+function releaseLock(compteId) {
+    // TODO: Fix Bug #5 - Implement proper lock release
+    // Hint: Remove the lock from the accountLocks map
+}
 
-**TODO: What did you learn from debugging these issues?**
 
-Example:
-```
-- Always initialize variables before using them
-- Phone number validation requires careful regex testing
-- Race conditions can occur even in simple applications
-- etc.
-```
+// AFTER
+function acquireLock(compteId) {
+    // TODO: Fix Bug #5 - Implement proper locking
+    // Currently this doesn't actually prevent race conditions
+    // Hint: Check if lock exists, if not create it, if exists return false
+    if (accountLocks.has(compteId)) {
+        return false; // Lock already taken
+    }
+    accountLocks.set(compteId, true);
+    return true;
+}
+
+function releaseLock(compteId) {
+    // TODO: Fix Bug #5 - Implement proper lock release
+    // Hint: Remove the lock from the accountLocks map
+    accountLocks.delete(compteId);
+}

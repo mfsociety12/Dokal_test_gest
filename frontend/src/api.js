@@ -20,6 +20,10 @@ async function apiRequest(endpoint, options = {}) {
   const config = {
     method: options.method || 'GET',
     // Missing headers! Should include Content-Type: application/json
+    headers: {
+      'Content-Type': 'application/json',
+      ...(options.headers || {})
+    },
     ...options
   };
 
@@ -27,7 +31,7 @@ async function apiRequest(endpoint, options = {}) {
   if (config.method !== 'GET' && options.body) {
     // BUG #4: The body is not being stringified!
     // JSON data needs to be converted to a string
-    config.body = options.body; // Should be JSON.stringify(options.body)
+    config.body = JSON.stringify(options.body); // Should be JSON.stringify(options.body)
   }
 
   try {
