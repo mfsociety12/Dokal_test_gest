@@ -1,40 +1,40 @@
 TEMPLATE - TEMPS PASSÉ SUR LE TEST
 ===================================
 
-Candidat: [VOTRE NOM]
-Date de réalisation: [DATE]
+Candidat: Jonathan Paul Délwendé KOUDOUGOU
+Date de réalisation: 26/11/25
 
 ---
 
-TEMPS TOTAL: ______ heures
+TEMPS TOTAL: 9 heures
 
 ---
 
 DÉTAIL PAR PARTIE:
 
 1. PARTIE 1 - Debugging:
-   Temps: ______ heures
+   Temps: 2 heures
 
    Difficultés rencontrées:
    -
    -
 
 2. PARTIE 2 - Backend:
-   Temps: ______ heures
+   Temps: 3 heures
 
    Difficultés rencontrées:
    -
    -
 
 3. PARTIE 3 - Frontend:
-   Temps: ______ heures
+   Temps: 3 heures
 
    Difficultés rencontrées:
    -
    -
 
 4. PARTIE 4 - Documentation:
-   Temps: ______ heures
+   Temps: 1 heures
 
    Difficultés rencontrées:
    -
@@ -62,27 +62,28 @@ Avez-vous utilisé ChatGPT, GitHub Copilot, ou autres outils IA? [OUI/NON]
 Si OUI, détaillez:
 
 1. Quels outils?
-   -
+   -ChatGPT
 
 2. Pour quelles parties?
-   -
+   -Documentation API.md, ARCHITECTURE.md, BUGS_FIXED.md
 
 3. Comment les avez-vous utilisés?
    (Exemple: "J'ai demandé à ChatGPT d'expliquer comment fonctionne X,
     puis j'ai écrit le code moi-même en m'inspirant de l'explication")
-   -
+   - Je lui ai donné le code pour qu'il puisse me proposer une documentation simple et professionnelle que j'ai ensuite adapté et corrigé.
+   - J'ai écrit la documentation et j'ai demandé à ChatGPT de le mettre en forme et de bien l'indenter.
 
 4. Avez-vous adapté le code généré?
-   -
+   -Non
 
 5. Comprenez-vous tout le code soumis?
-   -
+   -Oui
 
 ---
 
 BUGS TROUVÉS:
 
-Sur les 5 bugs intentionnels, combien en avez-vous trouvés? ______
+Sur les 5 bugs intentionnels, combien en avez-vous trouvés? 5
 
 Liste:
 - Bug #1: [OUI/NON]
@@ -114,7 +115,8 @@ COMMENTAIRES LIBRES:
 
 [Espace pour tout commentaire que vous souhaitez partager sur le test,
 les difficultés rencontrées, ou tout autre feedback]
-
+Ce n'est pas une excuse, mais parce que je suis souffrant du palu et que je n'ai eu 
+connaissance de l'offre qu'hier, je n'ai pas pu me donner à 100% pour ce travail.
 
 ---
 
@@ -123,5 +125,5 @@ HONNÊTETÉ:
 Je certifie que les informations ci-dessus sont exactes et que je peux
 expliquer et justifier chaque partie de mon code.
 
-Signature: ________________
-Date: ________________
+Signature: Koudougou Jonathan Paul Delwendé
+Date: 26/11/25
